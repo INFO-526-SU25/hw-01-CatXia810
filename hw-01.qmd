@@ -27,19 +27,30 @@ accidents <- read.csv(accidents_file_loc)
   #glimpse()
 ```
 
-
-```{r label-me-1}
+```{r}
+#create column that separates weekdays from weekend. Change time to the hour minute second format
 accidents <- accidents |>
   mutate(
     day_of_week_cat = ifelse(day_of_week %in% c("Saturday", "Sunday"), "Weekend", "Weekday"),
-    time = hms(time)
+    time = hms(time),
+    time_sec = as.numeric(time)
   )
     #code from https://stackoverflow.com/questions/28893193/creating-factor-variables-weekend-and-weekday-from-date
+```
 
+
+```{r label-me-1}
 accidents |>
-  ggplot(aes(x = as.numeric(time), group = severity, fill = severity)) +
+  #set x as time in the day, and group as severity
+  ggplot(aes(x = time_sec, group = severity, fill = severity)) +
+  
+  #create a density plot with 50% fill
   geom_density(alpha = 0.5) +
+  
+  #separate graphs based on weekend or weekday
   facet_wrap(~day_of_week_cat, nrow = 2) +
+  
+  #labels
   labs(
     x = "Time of day",
     y = "Density",
@@ -47,6 +58,9 @@ accidents |>
     title = "Number of accidents throughout the day",
     subtitle = "By day of week and severity"
   ) +
+  scale_x_continuous(
+    labels = function(x) format(seconds_to_period(x))  # convert seconds back to HH:MM:SS
+  )+
   theme_minimal()
 
 ```
