@@ -31,14 +31,23 @@ accidents <- read.csv(accidents_file_loc)
 ```{r label-me-1}
 accidents <- accidents |>
   mutate(
-    day_of_week_cat = ifelse(day_of_week %in% c("Saturday", "Sunday"), "Weekend", "Weekday")
+    day_of_week_cat = ifelse(day_of_week %in% c("Saturday", "Sunday"), "Weekend", "Weekday"),
+    time = hms(time)
   )
     #code from https://stackoverflow.com/questions/28893193/creating-factor-variables-weekend-and-weekday-from-date
 
 accidents |>
-  ggplot(aes(x = time, group = severity, fill = severity)) +
+  ggplot(aes(x = as.numeric(time), group = severity, fill = severity)) +
   geom_density(alpha = 0.5) +
-  facet_wrap(~day_of_week_cat, nrow = 2)
+  facet_wrap(~day_of_week_cat, nrow = 2) +
+  labs(
+    x = "Time of day",
+    y = "Density",
+    color = NULL,
+    title = "Number of accidents throughout the day",
+    subtitle = "By day of week and severity"
+  ) +
+  theme_minimal()
 
 ```
 
