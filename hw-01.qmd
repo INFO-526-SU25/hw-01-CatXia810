@@ -14,14 +14,32 @@ if (!require("pacman"))
   install.packages("pacman")
 
 # use this line for installing/loading
-# pacman::p_load() 
+pacman::p_load(tidyverse, here, glue, scales) 
 
 devtools::install_github("tidyverse/dsbox")
 ```
 
 ## 1 - Road traffic accidents in Edinburgh
+```{r Load Data: accidents}
+accidents_file_loc <- here("data", "accidents.csv")
+accidents <- read.csv(accidents_file_loc)
+#accidents |> 
+  #glimpse()
+```
+
 
 ```{r label-me-1}
+accidents <- accidents |>
+  mutate(
+    date = as.Date(date),
+    day_of_week_cat = ifelse(day_of_week %in% c("Saturday", "Sunday"), "Weekend", "Weekday")
+  )
+    #code from https://stackoverflow.com/questions/28893193/creating-factor-variables-weekend-and-weekday-from-date
+
+accidents |>
+  ggplot(aes(x = time, group = severity, fill = severity, color = severity)) +
+  geom_density(alpha = 0.4) +
+  facet_grid(rows = vars(day_of_week_cat))
 
 ```
 
