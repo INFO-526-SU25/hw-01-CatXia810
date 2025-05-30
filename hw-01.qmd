@@ -220,21 +220,55 @@ credit <- read.csv(credit_file_loc)
 ```
 ```{r}
 credit |>
-  ggplot(aes(x = income, y = balance, color = student)) +
+  ggplot(aes(x = income, y = balance, color = student, shape = student)) +
   geom_point(alpha = 0.5) +
   geom_smooth(method = lm, se = FALSE) +
-  facet_grid(student ~ married) +
-  # code from http://zevross.com/blog/2019/04/02/easy-multi-panel-plots-in-r-using-facet_wrap-and-facet_grid-from-ggplot2/
+  facet_grid(student ~ married,
+             labeller = label_both) +
+  # code from http://zevross.com/blog/2019/04/02/easy-multi-panel-plots-in-r-using-facet_wrap-and-facet_grid-from-ggplot2/ and https://www.datanovia.com/en/blog/how-to-change-ggplot-facet-labels/ 
   labs(
     x = "Income",
     y = "Credit card balance",
-    color = NULL
+    color = NULL,
   ) +
+  scale_shape_manual(values = c(16, 17)) +
+  scale_color_manual(values = c("#440154FF", "#009900")) +
+  guides(color = "none", shape = "none") +
+  # code from https://stackoverflow.com/questions/35618260/remove-legend-ggplot-2-2
   scale_y_continuous(labels = label_dollar()) +
   scale_x_continuous(labels = label_dollar(suffix = "K")) +
-  theme_minimal()
+  theme_bw()
 ```
+A. 
+The graph above shows individual income compared to credit card balance (from 0 dollars to 2000 dollars). We can see that regardless of marriage status or student status, credit card balance tends to increase as income increases. However, the students not only have a lower positive slope (meaning increases in income correspond to lower increases in credit card balance than non-students), but also fewer students who earn higher incomes. Surprisingly, although whether someone is married or not does not affect the slope (or relative increase in credit card balance per income) for non-students, married students have a significant lower slope than non-married students. However, this trend is not as strong as the non-student data, with many student datapoints not following the trendline from 0K to 50K$. 
 
+B.
+Married and student are not useful predictors in addition to income for predicting credit card balance because there was no hugely significant difference between non-married or married non-students with respect to income. Although there was a significant difference between married and non-married student trendlines, the data points themselves are not convincing enough for me to accept the trendline as a close fit for the data and thus, not it is not a good predictor.
+
+```{r}
+credit |>
+  mutate(
+    credit_util = (balance / limit) 
+  ) |>
+  ggplot(aes(x = income, y = credit_util, color = student, shape = student)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = lm, se = FALSE) +
+  facet_grid(student ~ married,
+             labeller = label_both) +
+  labs(
+    x = "Income",
+    y = "Credit Utilization",
+    color = NULL,
+  ) +
+  scale_shape_manual(values = c(16, 17)) +
+  scale_color_manual(values = c("#440154FF", "#009900")) +
+  guides(color = "none", shape = "none") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_x_continuous(labels = label_dollar(suffix = "K")) +
+  theme_bw()
+```
+D.
+There are more significant variations between various student and marriage statuses from income and utilization than income and credit balance. Between non-students, non-married individuals have a higher credit utilization increase as income increases compared to married individuals. For students, non-married individuals have a significant decrease in credit utilization as income increases while for married students, the credit utilization and income relationship is inconclusive. This is significantly different between the four compared graphs compared to the income and credit balance graphs.
 
 ## 5 - Napoleon’s march.
 
