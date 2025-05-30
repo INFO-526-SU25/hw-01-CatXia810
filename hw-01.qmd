@@ -27,7 +27,7 @@ accidents <- read.csv(accidents_file_loc)
   #glimpse()
 ```
 
-```{r}
+```{r Data Wrangling: accidents}
 #create column that separates weekdays from weekend. Change time to the hour minute second format
 accidents <- accidents |>
   mutate(
@@ -35,19 +35,21 @@ accidents <- accidents |>
     time = hms(time),
     time_sec = as.numeric(time)
   )
-    #code from https://stackoverflow.com/questions/28893193/creating-factor-variables-weekend-and-weekday-from-date
+    #code for ifelse from https://stackoverflow.com/questions/28893193/creating-factor-variables-weekend-and-weekday-from-date
 ```
 
 
-```{r label-me-1}
+```{r Accidents graph}
 accidents |>
   #set x as time in the day, and group as severity
   ggplot(aes(x = time_sec, group = severity, fill = severity)) +
   
   #create a density plot with 50% fill
   geom_density(alpha = 0.7) +
-
+  
+  #set manual colors for the graph
   scale_fill_manual(values = c("Fatal" = "#aa93b0", "Serious" = "#9ecac8", "Slight" = "#fef39f")) +
+  #Hexcodes taken from online color picker from the original picture
   
   #separate graphs based on weekend or weekday
   facet_wrap(~day_of_week_cat, nrow = 2) +
@@ -61,27 +63,53 @@ accidents |>
     subtitle = "By day of week and severity",
     caption = "Source: Data.gov.uk (2018)"
   ) +
+  
   scale_x_continuous(breaks = c(0, 14400, 28800, 43200, 57600, 72000, 86400),
+                     
+    # convert seconds back to HH:MM:SS                
     labels = function(x) {
     hours <- x %/% 3600
     minutes <- (x %% 3600) %/% 60
     seconds <- x %% 60
     sprintf("%02d:%02d:%02d", hours, minutes, seconds)
-  }
-    # convert seconds back to HH:MM:SS
-  )+
+    #code for sprintf consulted with AI for formating issues
+  })+
+  
   theme_minimal()
 
 ```
 
+The graph illustrates the density of traffic accidents based on the time of day with respect to weekday or weekends. It evaluates these points based on the level of severity of said accident, with each accident being classified as either Fatal, Serious, or Slight. The data clearly shows that although the amount of Serious and Slight traffic accidents are similar between the weekday and weekend, the number of fatal accidents on the weekdays are significantly greater. Additionally, regardless of the day of week, most car crashes seem to occur between 12PM and 9PM, with a peak at around 4PM.
+
 ## 2 - NYC marathon winners
 
-```{r label-me-2}
-
+```{r Load Data: Marathon}
+#Loads the data for marathon
+marathon_file_loc <- here("data", "nyc_marathon.csv")
+marathon <- read.csv(marathon_file_loc)
+marathon |> 
+  glimpse()
 ```
 
 ## 3 - US counties
 
 ## 4 - Rental apartments in SF
+```{r Load Data: Credit}
+#loads credit data
+credit_file_loc <- here("data", "credit.csv")
+credit <- read.csv(credit_file_loc)
+#credit |> 
+  #glimpse()
+```
+
 
 ## 5 - Napoleon’s march.
+
+```{r Load Data: Napoleon}
+#Loads up napoleon list data
+napoleon_file_loc <- here("data", "napoleon.rds")
+napoleon <- read_rds(napoleon_file_loc)
+#napoleon |>
+  #glimpse()
+```
+
