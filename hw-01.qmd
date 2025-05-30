@@ -181,6 +181,29 @@ marathon |>
 The time series shows that not only do both men and women winners show a decrease in marathon time since 1970, but that women winners show a significant decrease in time. The boxplot and histogram can only show the data for all the different years combined.
 
 ## 3 - US counties
+```{r}
+county |>
+  head()
+```
+
+
+```{r}
+ggplot(county) +
+  geom_point(aes(x = median_edu, y = median_hh_income)) +
+  geom_boxplot(aes(x = smoking_ban, y = pop2017)) 
+```
+The code above graphs the median education of a county to the median household income of a county with each county representing one point on the graph. Additionally, it graphs a boxplot for the counties depending on whether or not they had smoking bans with respect to the county population in 2017. This graph does not make any sense because firstly, a scatterplot is not the best way to visualize a variable like median_edu, which has discrete values. Additionally, a boxplot about county smoking regulations does not fit well into the scatterplot because the x values and y values for each graph are completely different. Especially, the coordinates of the y axis squish the box plot to be unreadable at this scale. Lastly, it's unclear what purpose the connection between smoking bans and 2017 population have upon first glance and further explanation is required to understand what the analysis is trying to convey.
+
+```{r}
+ggplot(county %>% filter(!is.na(median_edu))) + 
+  geom_point(aes(x = homeownership, y = poverty)) + 
+  facet_grid(median_edu ~ .)
+
+ggplot(county %>% filter(!is.na(median_edu))) + 
+  geom_point(aes(x = homeownership, y = poverty)) + 
+  facet_grid(. ~ median_edu)
+```
+The second graph makes it easier to compare poverty levels across people from different median education levels because you can clearly see a downwards trend, while in the first one, it's not immediately apparent that you should compare the y axis (poverty level) (from 0 - 50) since it's set up to emphasize the x axis (homeownership).
 
 ```{r}
 
@@ -194,6 +217,22 @@ credit_file_loc <- here("data", "credit.csv")
 credit <- read.csv(credit_file_loc)
 #credit |> 
   #glimpse()
+```
+```{r}
+credit |>
+  ggplot(aes(x = income, y = balance, color = student)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = lm, se = FALSE) +
+  facet_grid(student ~ married) +
+  # code from http://zevross.com/blog/2019/04/02/easy-multi-panel-plots-in-r-using-facet_wrap-and-facet_grid-from-ggplot2/
+  labs(
+    x = "Income",
+    y = "Credit card balance",
+    color = NULL
+  ) +
+  scale_y_continuous(labels = label_dollar()) +
+  scale_x_continuous(labels = label_dollar(suffix = "K")) +
+  theme_minimal()
 ```
 
 
