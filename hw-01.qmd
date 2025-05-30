@@ -340,7 +340,38 @@ There are more significant variations between various student and marriage statu
 #Loads up napoleon list data
 napoleon_file_loc <- here("data", "napoleon.rds")
 napoleon <- read_rds(napoleon_file_loc)
-#napoleon |>
-  #glimpse()
+napoleon$troops|>
+  glimpse()
 ```
-https://www.andrewheiss.com/blog/2017/08/10/exploring-minards-1812-plot-with-ggplot2/
+```{r}
+napoleon$troops |>
+  ggplot(aes( x = long, y = lat, group = group)) +
+  geom_path(
+    aes(size = survivors, color = direction), 
+    lineend = "square", 
+    linejoin = "bevel"
+    ) +
+  scale_size(range = c(0.3, 14))
+```
+Borrowed code directly from  https://www.andrewheiss.com/blog/2017/08/10/exploring-minards-1812-plot-with-ggplot2/ with modifications.
+
+```{r}
+napoleon$troops |>
+  ggplot(aes( x = long, y = lat, group = group)) +
+  geom_path(
+    aes(size = survivors, color = direction), 
+    lineend = "square", 
+    linejoin = "bevel"
+    ) +
+  labs(
+    x = NULL,
+    Y = NULL,
+    Title = "Napoleon's March 1812 Charles Minard",
+    Subtitle = "Recreation with ggplot2"
+  ) +
+  scale_size(range = c(0.3, 14)) +
+  coord_fixed(ratio = 2.5) +
+  scale_color_manual(values = c("#C8AE7E", "#545454")) +
+  theme_minimal()
+```
+
