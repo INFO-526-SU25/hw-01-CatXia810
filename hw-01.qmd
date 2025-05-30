@@ -14,7 +14,7 @@ if (!require("pacman"))
   install.packages("pacman")
 
 # use this line for installing/loading
-pacman::p_load(tidyverse, here, glue, scales) 
+pacman::p_load(tidyverse, here, glue, scales, openintro) 
 
 devtools::install_github("tidyverse/dsbox")
 ```
@@ -72,7 +72,7 @@ accidents |>
     minutes <- (x %% 3600) %/% 60
     seconds <- x %% 60
     sprintf("%02d:%02d:%02d", hours, minutes, seconds)
-    #code for sprintf consulted with AI for formating issues
+    #code for sprintf consulted with AI for formatting issues after attempting with https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/sprintf
   })+
   
   theme_minimal()
@@ -87,11 +87,47 @@ The graph illustrates the density of traffic accidents based on the time of day 
 #Loads the data for marathon
 marathon_file_loc <- here("data", "nyc_marathon.csv")
 marathon <- read.csv(marathon_file_loc)
-marathon |> 
-  glimpse()
+#marathon |> 
+  #glimpse()
 ```
 
+```{r Data Wrangling: Marathon A}
+marathon <- marathon |>
+  mutate(
+    time = hms(time),
+  ) |>
+  drop_na(time)
+```
+
+```{r Graphing: Marathon A}
+marathon |>
+  ggplot(aes(x = time_hrs)) +
+  geom_histogram(bins = 20) +
+  labs(
+    x = "Time (hours)",
+    y = "Number of runners",
+    title = "Distribution of Marathon Completion Time, Histogram"
+  ) + 
+  theme_minimal()
+
+marathon |>
+  ggplot(aes(x = time_hrs)) +
+  geom_boxplot() + 
+  labs(
+    x = "Time (hours)",
+    y = "Number of runners",
+    title = "Distribution of Marathon Completion Time, Boxplot"
+  ) +
+  theme_minimal()
+```
+The histogram and boxplot both show that number of runners who completed the marathon after 2.6 hours is very minimal. However, the histogram is able to show that there is a portion of time briefly after 2.25 hours where few to no runners completed the marathon, but the majority of runners completed the marathon at times around then. The boxplot, on the other hand, better shows the actual median hours it takes for runners to complete the marathon and the first and third quartile, and thus we can see that more runners finished in between the first quartile and median than the median and third quartile.
+
 ## 3 - US counties
+
+```{r}
+
+```
+
 
 ## 4 - Rental apartments in SF
 ```{r Load Data: Credit}
