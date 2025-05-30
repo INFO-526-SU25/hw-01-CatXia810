@@ -106,21 +106,79 @@ marathon |>
   labs(
     x = "Time (hours)",
     y = "Number of runners",
-    title = "Distribution of Marathon Completion Time, Histogram"
+    title = "Distribution of Marathon Winner Completion Time",
+    subtitle = "Histogram",
+    caption = "Source: NYC Marathon | Openintro"
   ) + 
   theme_minimal()
 
 marathon |>
   ggplot(aes(x = time_hrs)) +
   geom_boxplot() + 
+  #coord_cartesian(ylim = c(0,30)) +
   labs(
     x = "Time (hours)",
-    y = "Number of runners",
-    title = "Distribution of Marathon Completion Time, Boxplot"
+    #y = "Number of runners",
+    title = "Distribution of Marathon Winer Completion Time",
+    subtitle = "Boxplot",
+    caption = "Source: NYC Marathon | Openintro"
   ) +
   theme_minimal()
 ```
-The histogram and boxplot both show that number of runners who completed the marathon after 2.6 hours is very minimal. However, the histogram is able to show that there is a portion of time briefly after 2.25 hours where few to no runners completed the marathon, but the majority of runners completed the marathon at times around then. The boxplot, on the other hand, better shows the actual median hours it takes for runners to complete the marathon and the first and third quartile, and thus we can see that more runners finished in between the first quartile and median than the median and third quartile.
+The histogram and boxplot both show that number of runners who completed the marathon after 2.6 hours is very minimal. However, the histogram is able to show that there is a portion of time briefly after 2.25 hours where few to no runners completed the marathon, but the majority of runners completed the marathon at times around then. Additionally, it is able to show the number of runners for each time point. The boxplot, on the other hand, better shows the actual median hours it takes for runners to complete the marathon and the first and third quartile, and thus we can see that more runners finished in between the first quartile and median than the median and third quartile.
+
+```{r}
+marathon |>
+  ggplot(aes(x = time_hrs, color = division)) +
+  geom_boxplot() + 
+  facet_wrap(~division) +
+  scale_color_manual(values = c("deepskyblue", "salmon4")) +
+  labs(
+    x = "Time (hours)",
+    title = "Distribution of Marathon Winner Completion Time",
+    subtitle = "By gender",
+    color = "Gender",
+    caption = "Source: NYC Marathon | Openintro"
+  ) +
+  theme_minimal()
+```
+The median and majority of male runners finish the marathon before minimum time of female runners, with a tighter distance between the outliers than the female runners. Additionally, the more male runners fell between the median and third quartile than fell between the first quartile and median, while female runners were mostly equal. Lastly, both men and women had outliers to the right of the median but none or few to the left.
+
+```{r}
+marathon |>
+  ggplot(aes(x = time_hrs, color = division)) +
+  geom_boxplot() + 
+  facet_wrap(~division) +
+  coord_cartesian(ylim = c(0, 0.4)) +
+  scale_color_manual(values = c("deepskyblue", "salmon4")) +
+  labs(
+    x = "Time (hours)",
+    title = "Distribution of Marathon Winner Completion Time",
+    subtitle = "By Gender",
+    color = "Gender",
+    caption = "Source: NYC Marathon | Openintro"
+  ) +
+  theme_minimal()
+```
+The part of the box that goes below 0 is redundant. This increases the data to ink ratio because it gets rid of the extra empty coordinate space below the 0.
+
+```{r}
+marathon |>
+  ggplot(aes(x = year, y = time_hrs, color = division)) +
+  geom_line() + 
+  facet_wrap(~division) +
+  scale_color_manual(values = c("deepskyblue", "salmon4")) +
+  labs(
+    x = "Year",
+    y = "Time (hours)",
+    color = "Gender",
+    title = "Marathon winner competion time from 1970 to 2020",
+    subtitle = "By gender",
+    caption = "Source: NYC Marathon | Openintro"
+  ) +
+  theme_minimal()
+```
+The time series shows that not only do both men and women winners show a decrease in marathon time since 1970, but that women winners show a significant decrease in time. The boxplot and histogram can only show the data for all the different years combined.
 
 ## 3 - US counties
 
