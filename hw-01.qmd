@@ -206,7 +206,71 @@ ggplot(county %>% filter(!is.na(median_edu))) +
 The second graph makes it easier to compare poverty levels across people from different median education levels because you can clearly see a downwards trend, while in the first one, it's not immediately apparent that you should compare the y axis (poverty level) (from 0 - 50) since it's set up to emphasize the x axis (homeownership).
 
 ```{r}
+county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point() +
+  labs(
+    title = "Plot A"
+  )
 
+county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point() +
+  stat_smooth(se = FALSE) +
+  labs(
+    title = "Plot B"
+  )
+
+county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point() +
+  stat_smooth(aes(group = metro), se = FALSE, color = "green") +
+  labs(
+    title = "Plot C"
+  )
+
+county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  stat_smooth(aes(group = metro), se = FALSE) +
+  geom_point() +
+  labs(
+    title = "Plot D"
+  )
+
+county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point(aes(color = metro)) +
+  stat_smooth(aes(linetype = metro), se = FALSE) +
+  labs(
+    title = "Plot E"
+  ) +
+  guides(
+    color = guide_legend(order = 2), linetype = guide_legend(order = 1)
+  )
+# code from https://stackoverflow.com/questions/10035551/ordering-of-multiple-legends-guides-what-is-the-automatic-logic-how-to-change
+
+county |>
+  ggplot(aes(x = homeownership, y = poverty, color = metro)) +
+  geom_point() +
+  stat_smooth(se = FALSE) +
+  labs(
+    title = "Plot F"
+  )
+
+county |>
+  ggplot(aes(x = homeownership, y = poverty)) +
+  geom_point(aes(color = metro)) +
+  stat_smooth(se = FALSE) +
+  labs(
+    title = "Plot G"
+  )
+
+county |>
+  ggplot(aes(x = homeownership, y = poverty, color = metro)) +
+  geom_point() +
+  labs(
+    title = "Plot H"
+  )
 ```
 
 
@@ -279,4 +343,4 @@ napoleon <- read_rds(napoleon_file_loc)
 #napoleon |>
   #glimpse()
 ```
-
+https://www.andrewheiss.com/blog/2017/08/10/exploring-minards-1812-plot-with-ggplot2/
