@@ -45,7 +45,9 @@ accidents |>
   ggplot(aes(x = time_sec, group = severity, fill = severity)) +
   
   #create a density plot with 50% fill
-  geom_density(alpha = 0.5) +
+  geom_density(alpha = 0.7) +
+
+  scale_fill_manual(values = c("Fatal" = "#aa93b0", "Serious" = "#9ecac8", "Slight" = "#fef39f")) +
   
   #separate graphs based on weekend or weekday
   facet_wrap(~day_of_week_cat, nrow = 2) +
@@ -54,12 +56,19 @@ accidents |>
   labs(
     x = "Time of day",
     y = "Density",
-    color = NULL,
+    fill = "Severity",
     title = "Number of accidents throughout the day",
-    subtitle = "By day of week and severity"
+    subtitle = "By day of week and severity",
+    caption = "Source: Data.gov.uk (2018)"
   ) +
-  scale_x_continuous(
-    labels = function(x) format(seconds_to_period(x))  # convert seconds back to HH:MM:SS
+  scale_x_continuous(breaks = c(0, 14400, 28800, 43200, 57600, 72000, 86400),
+    labels = function(x) {
+    hours <- x %/% 3600
+    minutes <- (x %% 3600) %/% 60
+    seconds <- x %% 60
+    sprintf("%02d:%02d:%02d", hours, minutes, seconds)
+  }
+    # convert seconds back to HH:MM:SS
   )+
   theme_minimal()
 
