@@ -359,7 +359,7 @@ Borrowed code directly from  https://www.andrewheiss.com/blog/2017/08/10/explori
 napoleon$troops |>
   ggplot(aes( x = long, y = lat, group = group)) +
   geom_path(
-    aes(size = survivors, color = direction), 
+    aes(linewidth = survivors, color = direction), 
     lineend = "square", 
     linejoin = "bevel"
     ) +
@@ -373,5 +373,35 @@ napoleon$troops |>
   coord_fixed(ratio = 2.5) +
   scale_color_manual(values = c("#C8AE7E", "#545454")) +
   theme_minimal()
+```
+
+```{r}
+troops = napoleon$troops
+cities = napoleon$cities
+temp = napoleon$temperatures
+
+
+ggplot() +
+geom_path(
+  data = troops,
+  aes(x = long, y = lat, group = group, linewidth = survivors, color = direction), 
+  lineend = "square", 
+  linejoin = "bevel"
+  ) +
+geom_point(
+  data = cities, 
+  aes(x = long, y = lat)) +
+geom_text(data = cities, aes(x = long, y = lat, label = city)) +
+labs(
+  x = NULL,
+  Y = NULL,
+  Title = "Napoleon's March 1812 Charles Minard",
+  Subtitle = "Recreation with ggplot2"
+) +
+scale_size(range = c(0.3, 14)) +
+coord_fixed(ratio = 2.5) +
+scale_color_manual(values = c("#C8AE7E", "#545454")) +
+theme_minimal()
+```
 ```
 
