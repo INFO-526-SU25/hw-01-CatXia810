@@ -4,6 +4,10 @@ author: "Cat Xia"
 format: 
   html:
     embed-resources: true
+execute: 
+  warning: false
+  message: false
+  error: false
 toc: true
 ---
 
