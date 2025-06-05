@@ -14,12 +14,13 @@ if (!require("pacman"))
   install.packages("pacman")
 
 # use this line for installing/loading
-pacman::p_load(tidyverse, here, glue, scales, openintro) 
+pacman::p_load(tidyverse, here, glue, scales, openintro, ggrepel, gridExtra) 
 
 devtools::install_github("tidyverse/dsbox")
 ```
 
 ## 1 - Road traffic accidents in Edinburgh
+
 ```{r Load Data: accidents}
 accidents_file_loc <- here("data", "accidents.csv")
 accidents <- read.csv(accidents_file_loc)
@@ -37,7 +38,6 @@ accidents <- accidents |>
   )
     #code for ifelse from https://stackoverflow.com/questions/28893193/creating-factor-variables-weekend-and-weekday-from-date
 ```
-
 
 ```{r Accidents graph}
 accidents |>
@@ -125,6 +125,7 @@ marathon |>
   ) +
   theme_minimal()
 ```
+
 The histogram and boxplot both show that number of runners who completed the marathon after 2.6 hours is very minimal. However, the histogram is able to show that there is a portion of time briefly after 2.25 hours where few to no runners completed the marathon, but the majority of runners completed the marathon at times around then. Additionally, it is able to show the number of runners for each time point. The boxplot, on the other hand, better shows the actual median hours it takes for runners to complete the marathon and the first and third quartile, and thus we can see that more runners finished in between the first quartile and median than the median and third quartile.
 
 ```{r}
@@ -142,6 +143,7 @@ marathon |>
   ) +
   theme_minimal()
 ```
+
 The median and majority of male runners finish the marathon before minimum time of female runners, with a tighter distance between the outliers than the female runners. Additionally, the more male runners fell between the median and third quartile than fell between the first quartile and median, while female runners were mostly equal. Lastly, both men and women had outliers to the right of the median but none or few to the left.
 
 ```{r}
@@ -160,6 +162,7 @@ marathon |>
   ) +
   theme_minimal()
 ```
+
 The part of the box that goes below 0 is redundant. This increases the data to ink ratio because it gets rid of the extra empty coordinate space below the 0.
 
 ```{r}
@@ -178,20 +181,22 @@ marathon |>
   ) +
   theme_minimal()
 ```
+
 The time series shows that not only do both men and women winners show a decrease in marathon time since 1970, but that women winners show a significant decrease in time. The boxplot and histogram can only show the data for all the different years combined.
 
 ## 3 - US counties
+
 ```{r}
 county |>
   head()
 ```
-
 
 ```{r}
 ggplot(county) +
   geom_point(aes(x = median_edu, y = median_hh_income)) +
   geom_boxplot(aes(x = smoking_ban, y = pop2017)) 
 ```
+
 The code above graphs the median education of a county to the median household income of a county with each county representing one point on the graph. Additionally, it graphs a boxplot for the counties depending on whether or not they had smoking bans with respect to the county population in 2017. This graph does not make any sense because firstly, a scatterplot is not the best way to visualize a variable like median_edu, which has discrete values. Additionally, a boxplot about county smoking regulations does not fit well into the scatterplot because the x values and y values for each graph are completely different. Especially, the coordinates of the y axis squish the box plot to be unreadable at this scale. Lastly, it's unclear what purpose the connection between smoking bans and 2017 population have upon first glance and further explanation is required to understand what the analysis is trying to convey.
 
 ```{r}
@@ -203,6 +208,7 @@ ggplot(county %>% filter(!is.na(median_edu))) +
   geom_point(aes(x = homeownership, y = poverty)) + 
   facet_grid(. ~ median_edu)
 ```
+
 The second graph makes it easier to compare poverty levels across people from different median education levels because you can clearly see a downwards trend, while in the first one, it's not immediately apparent that you should compare the y axis (poverty level) (from 0 - 50) since it's set up to emphasize the x axis (homeownership).
 
 ```{r}
@@ -273,8 +279,8 @@ county |>
   )
 ```
 
-
 ## 4 - Rental apartments in SF
+
 ```{r Load Data: Credit}
 #loads credit data
 credit_file_loc <- here("data", "credit.csv")
@@ -282,6 +288,7 @@ credit <- read.csv(credit_file_loc)
 #credit |> 
   #glimpse()
 ```
+
 ```{r}
 credit |>
   ggplot(aes(x = income, y = balance, color = student, shape = student)) +
@@ -303,11 +310,10 @@ credit |>
   scale_x_continuous(labels = label_dollar(suffix = "K")) +
   theme_bw()
 ```
-A. 
-The graph above shows individual income compared to credit card balance (from 0 dollars to 2000 dollars). We can see that regardless of marriage status or student status, credit card balance tends to increase as income increases. However, the students not only have a lower positive slope (meaning increases in income correspond to lower increases in credit card balance than non-students), but also fewer students who earn higher incomes. Surprisingly, although whether someone is married or not does not affect the slope (or relative increase in credit card balance per income) for non-students, married students have a significant lower slope than non-married students. However, this trend is not as strong as the non-student data, with many student datapoints not following the trendline from 0K to 50K$. 
 
-B.
-Married and student are not useful predictors in addition to income for predicting credit card balance because there was no hugely significant difference between non-married or married non-students with respect to income. Although there was a significant difference between married and non-married student trendlines, the data points themselves are not convincing enough for me to accept the trendline as a close fit for the data and thus, not it is not a good predictor.
+A.  The graph above shows individual income compared to credit card balance (from 0 dollars to 2000 dollars). We can see that regardless of marriage status or student status, credit card balance tends to increase as income increases. However, the students not only have a lower positive slope (meaning increases in income correspond to lower increases in credit card balance than non-students), but also fewer students who earn higher incomes. Surprisingly, although whether someone is married or not does not affect the slope (or relative increase in credit card balance per income) for non-students, married students have a significant lower slope than non-married students. However, this trend is not as strong as the non-student data, with many student datapoints not following the trendline from 0K to 50K\$.
+
+B.  Married and student are not useful predictors in addition to income for predicting credit card balance because there was no hugely significant difference between non-married or married non-students with respect to income. Although there was a significant difference between married and non-married student trendlines, the data points themselves are not convincing enough for me to accept the trendline as a close fit for the data and thus, not it is not a good predictor.
 
 ```{r}
 credit |>
@@ -331,8 +337,8 @@ credit |>
   scale_x_continuous(labels = label_dollar(suffix = "K")) +
   theme_bw()
 ```
-D.
-There are more significant variations between various student and marriage statuses from income and utilization than income and credit balance. Between non-students, non-married individuals have a higher credit utilization increase as income increases compared to married individuals. For students, non-married individuals have a significant decrease in credit utilization as income increases while for married students, the credit utilization and income relationship is inconclusive. This is significantly different between the four compared graphs compared to the income and credit balance graphs.
+
+D.  There are more significant variations between various student and marriage statuses from income and utilization than income and credit balance. Between non-students, non-married individuals have a higher credit utilization increase as income increases compared to married individuals. For students, non-married individuals have a significant decrease in credit utilization as income increases while for married students, the credit utilization and income relationship is inconclusive. This is significantly different between the four compared graphs compared to the income and credit balance graphs.
 
 ## 5 - Napoleon’s march.
 
@@ -343,6 +349,7 @@ napoleon <- read_rds(napoleon_file_loc)
 napoleon$troops|>
   glimpse()
 ```
+
 ```{r}
 napoleon$troops |>
   ggplot(aes( x = long, y = lat, group = group)) +
@@ -353,7 +360,8 @@ napoleon$troops |>
     ) +
   scale_size(range = c(0.3, 14))
 ```
-Borrowed code directly from  https://www.andrewheiss.com/blog/2017/08/10/exploring-minards-1812-plot-with-ggplot2/ with modifications.
+
+Borrowed code directly from https://www.andrewheiss.com/blog/2017/08/10/exploring-minards-1812-plot-with-ggplot2/ with modifications.
 
 ```{r}
 napoleon$troops |>
@@ -381,17 +389,21 @@ cities = napoleon$cities
 temp = napoleon$temperatures
 
 
-ggplot() +
+troop_march <- ggplot() +
 geom_path(
   data = troops,
   aes(x = long, y = lat, group = group, linewidth = survivors, color = direction), 
   lineend = "square", 
-  linejoin = "bevel"
+  linejoin = "bevel",
   ) +
+labs(
+  x = NULL,
+  y = NULL
+) +
 geom_point(
   data = cities, 
   aes(x = long, y = lat)) +
-geom_text(data = cities, aes(x = long, y = lat, label = city)) +
+geom_text_repel(data = cities, aes(x = long, y = lat, label = city), size = 3) +
 labs(
   x = NULL,
   Y = NULL,
@@ -400,8 +412,42 @@ labs(
 ) +
 scale_size(range = c(0.3, 14)) +
 coord_fixed(ratio = 2.5) +
-scale_color_manual(values = c("#C8AE7E", "#545454")) +
-theme_minimal()
-```
+scale_color_manual(values = c("#C8AE7E", "#D3D3D3")) +
+theme_minimal() +
+theme(legend.position = "none")
 ```
 
+Read through http://euclid.psych.yorku.ca/www/psy6135/tutorials/Minard.html to look at geom_point() and geom_text_repel. Code is my own.
+
+```{r}
+temp <- temp|>
+  mutate(temp_label = paste(temp, "°", format(date, "%b %d")))
+  
+  #https://blog.devgenius.io/r-for-haters-how-to-convert-date-format-50583214e1c8
+  
+temp_graph <- temp |>
+  ggplot(aes(x = long, y = temp)) +
+  geom_line(color = "#ADD8E6") +
+  geom_text_repel(aes(label = temp_label), size = 3) +
+  labs(
+    y = "°Celsius",
+    x = NULL,
+) +
+  coord_fixed(ratio = 0.11) +
+  theme_minimal() +
+  theme(panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        axis.text.x = element_blank(), axis.ticks = element_blank(),
+        panel.border = element_blank())
+temp_graph
+```
+
+Code for theme() taken directly from <http://euclid.psych.yorku.ca/www/psy6135/tutorials/Minard.html>
+
+```{r}
+grid.arrange(troop_march, temp_graph, nrow = 2, heights = c(3.5, 2), 
+  top = "Napoleon's March 1812 Charles Minard Recreation")
+```
+
+Code for theme() taken directly from <http://euclid.psych.yorku.ca/www/psy6135/tutorials/Minard.html> with minor modifications
